@@ -6,7 +6,7 @@ BASE_DIR = pl.Path(__file__).resolve().parent.parent
 data_path = BASE_DIR / 'data'/'25-06kumamoto.csv'
 
 st.write('＊＊選択肢「-」＝「わからない」＊＊')
-st.write('データが不十分のため、性別・年齢のクロス検索がお勧めしません')
+st.write('熊本市以外の市町村は「性別」・「年齢」の統計データがありません')
 
 @st.cache_data
 def load_data():
@@ -27,7 +27,7 @@ full_table[[
 
 result = full_table
 
-filter_text = '無し'
+filter_text = ''
 
 
 
