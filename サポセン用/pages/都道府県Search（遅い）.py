@@ -66,7 +66,7 @@ if age5sai != '全部':
 if pref != '全部':
     result = result[result['都道府県'] == pref]
 
-
+st.divider()
 st.header('総数 = '+ str(result['在留外国人数'].sum()))
 
 

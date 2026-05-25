@@ -77,4 +77,6 @@ if  select_form == '年齢・性別別':
         agesex['性別'].unique()
     )
     result = result[result['性別'] == sex]
+
+    st.divider()
     st.write(result)

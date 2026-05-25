@@ -27,7 +27,7 @@ full_table[[
 
 result = full_table
 
-
+filter_text = '無し'
 
 
 
@@ -63,18 +63,23 @@ qual = st.selectbox(
 
 if city != '全部':
     result = result[result['市区町村']==city]
+    filter_text = '\n市区町村=' + city
 
 if age5sai != '全部':
     result = result[result['年齢（５歳階級）']==age5sai]
+    filter_text += '\n年齢（５歳階級）=' + age5sai
 
 if sex != '全部':
     result = result[result['性別']==sex]
+    filter_text += '\n性別=' + sex
 
 if nat != '全部':
     result = result[result['国籍・地域'] == nat]
+    filter_text += '\n国籍・地域=' + nat
 
 if qual != '全部':
     result = result[result['在留資格'] == qual]
+    filter_text += '\n在留資格=' + qual
 
 
 result['合計 / 在留外国人数'] = pd.to_numeric(
@@ -82,5 +87,15 @@ result['合計 / 在留外国人数'] = pd.to_numeric(
     errors='coerce'
 )
 
-st.header(result['合計 / 在留外国人数'].sum())
+
+st.divider()
+st.header('総数＝'+str(result['合計 / 在留外国人数'].sum()))
+st.divider()
+st.code('filter:' + filter_text)
+
+
+st.dataframe(result.groupby('在留資格').sum()['合計 / 在留外国人数'].sort_values(ascending=False))
+
+
+st.dataframe(result.groupby('市区町村').sum()['合計 / 在留外国人数'].sort_values(ascending=False))
 
