@@ -13,7 +13,7 @@ data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
 
 st.caption('＊＊選択肢「-」＝「わからない」＊＊')
 st.caption('2025のデータに熊本市以外の市町区村は「性別」・「年齢」の統計データがありません')
-st.caption('2024以前のデータは「市町区村」・「在留資格」・「国籍・地域」のクロスサーチができません')
+st.caption('2024以前のデータは「市町区村」のクロスサーチができません')
 
 years = st.selectbox('Choose Year',
                      ['-','2025','2024','2023','2022','2021'])
@@ -30,6 +30,8 @@ year_list = {
 def load_data(years):
     if years in year_list:
         return pd.read_csv(year_list[years])
+
+
 
 
 if years == '-':
@@ -122,7 +124,7 @@ st.divider()
 st.code('filter:' + filter_text)
 
 for x in result.columns.drop(['在留外国人数','都道府県']):
-    st.badge('順位表（'+x+')')
+    st.badge('順位表（'+x+'）')
     st.dataframe(result.groupby(x).sum()['在留外国人数'].sort_values(ascending=False))
 
 
