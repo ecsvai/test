@@ -10,13 +10,14 @@ def data_exact(year):
     return data[year]
 
 type_select = st.selectbox('choose',['-','長期推移','特定の年'],key = 'type_select')
+type_chart = st.selectbox('チャート種類', ['-', '棒', '円','折れ線'], key='type_chart')
 
 if type_select == '-':
     st.stop()
 
 
 def reset():
-    st.session_state['type_select'] = '-'
+    st.session_state['type_select','type_chart'] = '-'
 
 st.button('reset',on_click=reset)
 
@@ -84,45 +85,89 @@ if type_select == '特定の年':
 
             data_output2 = top10_2_2.copy()
 
-##Bar chart####################################
-def bar_chart():
-    fig_output = px.histogram(data_output, param_1, '在留外国人数', barmode='group', text_auto=True)
-    fig_output.update_layout(xaxis={'categoryorder': 'total descending'})
-    st.plotly_chart(fig_output)
-
-    fig_output = px.histogram(data_output2, param_1, '在留外国人数', color=param_2,
-                              barmode='stack', text_auto=True)
-    fig_output.update_layout(xaxis={'categoryorder': 'total descending'})
-    st.plotly_chart(fig_output)
-
-type_chart = st.selectbox('チャート種類', ['-', '棒', '円'])
 
 
-
-##Pie Chart#####################################
-def pie_chart():
-    if param_1 == '-' or param_2 == '-':
-        st.stop()
-    else:
-        detailed_select = st.selectbox('Choose Pie Name',
-                                       ['-']+list(data_output2[param_1].unique())
-                                       , key = 'detailed_select')
-        if detailed_select == "-":
-            d_df = data_output2
-        else:
-            d_df = data_output2.loc[data_output2[param_1] == detailed_select]
-
-        fig_output = px.pie(d_df, names=d_df[param_2], values='在留外国人数')
-        st.dataframe(d_df)
+    ##Bar chart####################################
+    def bar_chart_specific_year():
+        fig_output = px.histogram(data_output, param_1, '在留外国人数', barmode='group', text_auto=True)
+        fig_output.update_layout(xaxis={'categoryorder': 'total descending'})
         st.plotly_chart(fig_output)
+        if param_2 != '-':
+            fig_output = px.histogram(data_output2, param_1, '在留外国人数', color=param_2,
+                                      barmode='stack', text_auto=True)
+            fig_output.update_layout(xaxis={'categoryorder': 'total descending'})
+            st.plotly_chart(fig_output)
 
 
-if type_chart == '-':
-    st.stop()
-elif type_chart == '棒':
-    bar_chart()
-elif type_chart == '円':
-    pie_chart()
+
+
+
+    ##Pie Chart#####################################
+    def pie_chart_specific_year():
+        if param_1 == '-':
+            st.stop()
+        elif param_2 == '-':
+            d_df = data_output
+        else:
+            detailed_select = st.selectbox('Choose Pie Name',
+                                           ['-']+list(data_output2[param_2].unique())
+                                           , key = 'detailed_select')
+            if detailed_select == "-":
+                d_df = data_output2
+            else:
+                d_df = data_output2.loc[data_output2[param_2] == detailed_select]
+
+        fig_output = px.pie(d_df, names=d_df[param_1], values='在留外国人数')
+        st.plotly_chart(fig_output)
+#####################################################
+
+    if type_chart == '棒':
+        bar_chart_specific_year()
+    elif type_chart == '円':
+        pie_chart_specific_year()
+    else:
+        pass
+
+
 
 
 ##Chronological Order##########################
+
+if type_select == '長期推移':
+    df_total = pd.DataFrame()
+    df_final = pd.DataFrame()
+    for year in ['2025','2024','2023','2022','2021']:
+        df_total = data_exact(year).copy()
+        df_total['year'] = year
+        df_final = pd.concat([df_final,df_total])
+
+    param_1 = st.selectbox('Select Parameter 1',
+                           ['-'] +
+                           list(df_final.columns.drop(['在留外国人数','year'])), key='param_1')
+
+    df_change = df_final.groupby([param_1, 'year'], as_index= False)['在留外国人数'].sum()
+
+    df_temp = pd.DataFrame()
+    df_temp['year'] = df_final['year'].unique().astype(int)
+    total_list = []
+    for x in df_final['year'].unique():
+        total_list.append(df_final.loc[df_final['year'] == x]['在留外国人数'].sum())
+    df_temp['total'] = total_list
+
+    fig_output = px.line(df_temp,x = 'year', y = 'total', markers = True)
+    fig_output.update_xaxes(tickformat = 'd', type = 'category', categoryorder = 'total ascending')
+    st.plotly_chart(fig_output)
+
+    if param_1 == '-':
+       st.stop()
+    elif param_2 == '-':
+        pass
+    else:
+        param_2 = st.selectbox('Select Parameter 2', ['-'] + df_change[param_1].unique())
+
+
+
+
+
+
+    st.dataframe(df_change)
