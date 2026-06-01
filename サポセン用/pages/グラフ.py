@@ -169,7 +169,6 @@ if type_select == '長期推移':
         param_2 = st.multiselect('Select Parameters', df_change[param_1].unique())
         df_plot = df_change[df_change[param_1].isin(param_2)]
 
-        st.write(np.dtype(df_plot['year']))
 
     fig_output2 = px.line(df_plot, x = 'year', y = '在留外国人数', color = param_1, markers = True)
     fig_output.update_xaxes(tickformat='d', type='category', categoryorder='total ascending')
