@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import numpy as np
 
 
 from utils.data_function import load_data
@@ -10,7 +11,7 @@ def data_exact(year):
     return data[year]
 
 type_select = st.selectbox('choose',['-','長期推移','特定の年'],key = 'type_select')
-type_chart = st.selectbox('チャート種類', ['-', '棒', '円','折れ線'], key='type_chart')
+#type_chart = st.selectbox('チャート種類', ['-', '棒', '円','折れ線'], key='type_chart')
 
 if type_select == '-':
     st.stop()
@@ -120,7 +121,7 @@ if type_select == '特定の年':
         fig_output = px.pie(d_df, names=d_df[param_1], values='在留外国人数')
         st.plotly_chart(fig_output)
 #####################################################
-
+    type_chart = st.selectbox('チャート種類', ['-', '棒', '円', '折れ線'], key='type_chart')
     if type_chart == '棒':
         bar_chart_specific_year()
     elif type_chart == '円':
@@ -141,11 +142,6 @@ if type_select == '長期推移':
         df_total['year'] = year
         df_final = pd.concat([df_final,df_total])
 
-    param_1 = st.selectbox('Select Parameter 1',
-                           ['-'] +
-                           list(df_final.columns.drop(['在留外国人数','year'])), key='param_1')
-
-    df_change = df_final.groupby([param_1, 'year'], as_index= False)['在留外国人数'].sum()
 
     df_temp = pd.DataFrame()
     df_temp['year'] = df_final['year'].unique().astype(int)
@@ -154,20 +150,33 @@ if type_select == '長期推移':
         total_list.append(df_final.loc[df_final['year'] == x]['在留外国人数'].sum())
     df_temp['total'] = total_list
 
+    st.subheader('総数推移')
     fig_output = px.line(df_temp,x = 'year', y = 'total', markers = True)
     fig_output.update_xaxes(tickformat = 'd', type = 'category', categoryorder = 'total ascending')
     st.plotly_chart(fig_output)
 
+
+    param_1 = st.selectbox('Select Parameter 1',
+                           ['-'] +
+                           list(df_final.columns.drop(['在留外国人数', 'year'])), key='param_1')
+
+
     if param_1 == '-':
        st.stop()
-    elif param_2 == '-':
-        pass
     else:
-        param_2 = st.selectbox('Select Parameter 2', ['-'] + df_change[param_1].unique())
+        df_change = df_final.groupby([param_1, 'year'], as_index=False)['在留外国人数'].sum()
+
+        param_2 = st.multiselect('Select Parameters', df_change[param_1].unique())
+        df_plot = df_change[df_change[param_1].isin(param_2)]
+
+        st.write(np.dtype(df_plot['year']))
+
+    fig_output2 = px.line(df_plot, x = 'year', y = '在留外国人数', color = param_1, markers = True)
+    fig_output.update_xaxes(tickformat='d', type='category', categoryorder='total ascending')
+    st.plotly_chart(fig_output2)
 
 
 
 
-
-
-    st.dataframe(df_change)
+    #st.dataframe(df_final)
+    #st.dataframe(df_change)
