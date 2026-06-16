@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-data = pd.read_csv('23-06kumamoto_main.csv')
-
-data['在留資格'] = data['在留資格'].str.replace('?','・',regex=True)
-
+df = pd.read_excel('25-06年齢・性別別.xlsx', header=3)
+df_new = df.copy()
 
 
-data.to_excel('23-06kumamoto_maintest.xlsx', index=False)
+df_new.loc[df['州']=='無国籍','国籍・地域']='無国籍'
+
+df_new.to_excel('test!!!!!!!!!.xlsx', index=False)

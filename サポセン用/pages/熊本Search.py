@@ -61,10 +61,14 @@ filter_text = ''
 if '市区町村' in result.columns:
     city = st.selectbox(
         '市区町村',
-        ['全部']+list(full_table['市区町村'].unique()),
+        ['全部', '熊本市全体']+list(full_table['市区町村'].unique()),
         key = 'city'
     )
-    if city != '全部':
+    if city == '熊本市全体':
+        result = result[result['市区町村'].isin([
+            '熊本市中央区','熊本市東区','熊本市西区','熊本市南区','熊本市北区'])]
+        result['市区町村'] = '熊本市全体'
+    elif city != '全部':
         result = result[result['市区町村'] == city]
         filter_text = '\n市区町村=' + city
 
