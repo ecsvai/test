@@ -194,9 +194,15 @@ if type_select == '長期推移':
        st.stop()
     else:
         df_change = df_final.groupby([param_1, 'year'], as_index=False)['在留外国人数'].sum()
+        for x in df_change[param_1]:
+            for y in ['2025', '2024', '2023', '2022', '2021']:
+                if ((df_change[param_1] == x) & (df_change['year'] == y)).any() == False:
+                    df_change.loc[len(df_change)] = [x, y, 0]
 
         param_2 = st.multiselect('Select Parameters', df_change[param_1].unique())
-        df_plot = df_change[df_change[param_1].isin(param_2)]
+        df_plot = df_change[df_change[param_1].isin(param_2)].sort_values('year', ascending=[False])
+
+        st.dataframe(df_plot)
 
 
     fig_output2 = px.line(df_plot, x = 'year', y = '在留外国人数', color = param_1, markers = True)
