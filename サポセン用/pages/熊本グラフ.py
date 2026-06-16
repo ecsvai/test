@@ -202,7 +202,6 @@ if type_select == '長期推移':
         param_2 = st.multiselect('Select Parameters', df_change[param_1].unique())
         df_plot = df_change[df_change[param_1].isin(param_2)].sort_values('year', ascending=[False])
 
-        st.dataframe(df_plot)
 
 
     fig_output2 = px.line(df_plot, x = 'year', y = '在留外国人数', color = param_1, markers = True)
