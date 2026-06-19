@@ -11,7 +11,6 @@ def load_data():
 
 full_table = load_data()
 
-st.title('都道府県別で探す！')
 
 keys = ['nat','qual','sex','age5sai','pref']
 def reset():
