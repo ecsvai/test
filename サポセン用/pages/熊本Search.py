@@ -3,20 +3,22 @@ import streamlit as st
 import pathlib as pl
 
 
+st.caption('＊＊選択肢「-」＝「わからない」＊＊')
+st.caption('2025のデータに熊本市以外の市町区村は「性別」・「年齢」の統計データがありません')
+st.caption('2024以前のデータは「市区町村」のクロスサーチができません')
+
+years = st.selectbox('Choose Year',
+                     ['-','2025','2024','2023','2022','2021'])
+
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
 data_2506 = BASE_DIR / 'data'/'25-06kumamoto.csv'
 data_2406 = BASE_DIR / 'data'/'24-06kumamoto.csv'
 data_2306_main = BASE_DIR / 'data'/'23-06kumamoto_main.csv'
 data_2206_main = BASE_DIR / 'data'/'22-06kumamoto_main.csv'
 data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
+city_nat = BASE_DIR / 'data'/f'{years}-06city_nat.csv'
 
 
-st.caption('＊＊選択肢「-」＝「わからない」＊＊')
-st.caption('2025のデータに熊本市以外の市町区村は「性別」・「年齢」の統計データがありません')
-st.caption('2024以前のデータは「市町区村」のクロスサーチができません')
-
-years = st.selectbox('Choose Year',
-                     ['-','2025','2024','2023','2022','2021'])
 
 year_list = {
     '2025':data_2506,
@@ -130,6 +132,13 @@ st.code('filter:' + filter_text)
 for x in result.columns.drop(['在留外国人数','都道府県']):
     st.badge('順位表（'+x+'）')
     st.dataframe(result.groupby(x).sum()['在留外国人数'].sort_values(ascending=False))
+
+if years <= '2023':
+    with st.container(border = True):
+        st.badge('市区町村x国籍・地域')
+        st.dataframe((pd.read_csv(city_nat)))
+
+
 
 
 

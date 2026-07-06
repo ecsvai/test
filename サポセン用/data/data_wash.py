@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-df = pd.read_excel('25-06年齢・性別別.xlsx', header=3)
-df_new = df.copy()
+df = pd.read_csv('21-06kumamoto_main.csv')
+
+df = df.drop(['Unnamed: 0.1','Unnamed: 0.2'],axis=1)
+
+df.to_csv('21-06kumamoto_main.csv', index=False)
 
 
-df_new.loc[df['州']=='無国籍','国籍・地域']='無国籍'
-
-df_new.to_excel('test!!!!!!!!!.xlsx', index=False)
