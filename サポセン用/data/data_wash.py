@@ -1,10 +1,12 @@
 import pandas as pd
+import streamlit as st
 
 
-df = pd.read_csv('21-06kumamoto_main.csv')
+df = pd.read_csv('25-12kumamoto.csv',dtype=str)
 
-df = df.drop(['Unnamed: 0.1','Unnamed: 0.2'],axis=1)
 
-df.to_csv('21-06kumamoto_main.csv', index=False)
+df.dropna(how='all',axis=1,inplace=True)
+
+df.to_csv('25-12kumamoto.csv',index=False)
 
 

@@ -3,16 +3,19 @@ import streamlit as st
 import pathlib as pl
 
 
-st.caption('＊＊選択肢「-」＝「わからない」＊＊')
+st.caption('＊＊（注１）在留外国人数が5,000人未満の市町村に関しては、年齢及び性別に秘匿処理を行っています＊＊')
+st.caption('＊＊（注２）総数１０人以下の市町村については、人数以外の国籍・地域、在留資格、年齢及び性別については秘匿処理を行っています＊＊')
 st.caption('2025のデータに熊本市以外の市町区村は「性別」・「年齢」の統計データがありません')
 st.caption('2024以前のデータは「市区町村」のクロスサーチができません')
 
-years = st.selectbox('Choose Year',
-                     ['-','2025','2024','2023','2022','2021'])
+years = st.selectbox('年月を選択',
+                     ['-','202512','202506','202412','202406','202306','202206','202106'])
 
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
+data_2512 = BASE_DIR / 'data'/'25-12kumamoto.csv'
 data_2506 = BASE_DIR / 'data'/'25-06kumamoto.csv'
 data_2406 = BASE_DIR / 'data'/'24-06kumamoto.csv'
+data_2412 = BASE_DIR / 'data'/'24-12kumamoto.csv'
 data_2306_main = BASE_DIR / 'data'/'23-06kumamoto_main.csv'
 data_2206_main = BASE_DIR / 'data'/'22-06kumamoto_main.csv'
 data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
@@ -21,11 +24,13 @@ city_nat = BASE_DIR / 'data'/f'{years}-06city_nat.csv'
 
 
 year_list = {
-    '2025':data_2506,
-    '2024':data_2406,
-    '2023':data_2306_main,
-    '2022':data_2206_main,
-    '2021':data_2106_main
+    '202512':data_2512,
+    '202506':data_2506,
+    '202412':data_2412,
+    '202406':data_2406,
+    '202306':data_2306_main,
+    '202206':data_2206_main,
+    '202106':data_2106_main
 }
 
 @st.cache_data
