@@ -13,7 +13,7 @@ def data_exact(year):
     return data[year]
 
 st.header('メンテナンス中！')
-st.image(base_dir/'data'/'Exclamation.jpeg')
+st.image(base_dir/'data'/'ojigi.png')
 st.error('メンテナンス中！')
 st.divider()
 
