@@ -7,18 +7,18 @@ year_vari = None
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
 data_2506 = BASE_DIR / 'data'/'25-06kumamoto.csv'
 data_2406 = BASE_DIR / 'data'/'24-06kumamoto.csv'
-data_2306_main = BASE_DIR / 'data'/'23-06kumamoto_main.csv'
-data_2206_main = BASE_DIR / 'data'/'22-06kumamoto_main.csv'
-data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
+data_2306 = BASE_DIR / 'data'/'23-06kumamoto.csv'
+data_2206 = BASE_DIR / 'data'/'22-06kumamoto.csv'
+data_2106 = BASE_DIR / 'data'/'21-06kumamoto.csv'
 
 data_city_nat = BASE_DIR / 'data'/f'{year_vari}-06city_nat.csv'
 
 year_list = {
     '202506':data_2506,
     '202406':data_2406,
-    '202306':data_2306_main,
-    '202206':data_2206_main,
-    '202106':data_2106_main
+    '202306':data_2306,
+    '202206':data_2206,
+    '202106':data_2106
 }
 
 

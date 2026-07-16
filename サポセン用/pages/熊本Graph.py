@@ -2,7 +2,9 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 import numpy as np
+import pathlib as pl
 
+base_dir = pl.Path(__file__).resolve().parent.parent
 
 from utils.data_function import load_data
 data = load_data()
@@ -10,8 +12,13 @@ data = load_data()
 def data_exact(year):
     return data[year]
 
-st.caption('性別・年齢のデータが不十分のため使わないでください')
-st.caption('市区町村のデータは2024/2025年のみ')
+st.header('メンテナンス中！')
+st.image(base_dir/'data'/'Exclamation.jpeg')
+st.error('メンテナンス中！')
+st.divider()
+
+#st.caption('性別・年齢のデータが不十分のため使わないでください')
+#st.caption('市区町村のデータは2024/2025年のみ')
 
 
 type_select = st.selectbox('データ選択',['-','長期推移','特定の年'],key = 'type_select')
