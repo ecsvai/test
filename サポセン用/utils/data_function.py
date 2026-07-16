@@ -14,11 +14,11 @@ data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
 data_city_nat = BASE_DIR / 'data'/f'{year_vari}-06city_nat.csv'
 
 year_list = {
-    '2025':data_2506,
-    '2024':data_2406,
-    '2023':data_2306_main,
-    '2022':data_2206_main,
-    '2021':data_2106_main
+    '202506':data_2506,
+    '202406':data_2406,
+    '202306':data_2306_main,
+    '202206':data_2206_main,
+    '202106':data_2106_main
 }
 
 

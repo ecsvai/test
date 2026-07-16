@@ -4,39 +4,22 @@ import pathlib as pl
 
 
 st.caption('＊＊（注１）在留外国人数が5,000人未満の市町村に関しては、年齢及び性別に秘匿処理を行っています＊＊')
-st.caption('＊＊（注２）総数１０人以下の市町村については、人数以外の国籍・地域、在留資格、年齢及び性別については秘匿処理を行っています＊＊')
-st.caption('2025のデータに熊本市以外の市町区村は「性別」・「年齢」の統計データがありません')
-st.caption('2024以前のデータは「市区町村」のクロスサーチができません')
+st.caption('＊＊（注２）総数10人以下の市町村については、人数以外の国籍・地域、在留資格、年齢及び性別については秘匿処理を行っています＊＊')
+st.caption('＊＊（注３）2023年12月以前のデータは「市区町村」のクロスサーチができません。市区町村データはページの最下部にあります＊＊')
 
 years = st.selectbox('年月を選択',
-                     ['-','202512','202506','202412','202406','202306','202206','202106'])
+                     ['-','202512','202506','202412','202406','202312','202306',
+                      '202212','202206','202112','202106'])
 
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
-data_2512 = BASE_DIR / 'data'/'25-12kumamoto.csv'
-data_2506 = BASE_DIR / 'data'/'25-06kumamoto.csv'
-data_2406 = BASE_DIR / 'data'/'24-06kumamoto.csv'
-data_2412 = BASE_DIR / 'data'/'24-12kumamoto.csv'
-data_2306_main = BASE_DIR / 'data'/'23-06kumamoto_main.csv'
-data_2206_main = BASE_DIR / 'data'/'22-06kumamoto_main.csv'
-data_2106_main = BASE_DIR / 'data'/'21-06kumamoto_main.csv'
-city_nat = BASE_DIR / 'data'/f'{years}-06city_nat.csv'
 
+data_main = BASE_DIR / 'data'/f'{years[2:4]}-{years[4:6]}kumamoto.csv'
+city_nat = BASE_DIR / 'data'/f'{years[:4]}-{years[4:6]}city_nat.csv'
 
-
-year_list = {
-    '202512':data_2512,
-    '202506':data_2506,
-    '202412':data_2412,
-    '202406':data_2406,
-    '202306':data_2306_main,
-    '202206':data_2206_main,
-    '202106':data_2106_main
-}
 
 @st.cache_data
 def load_data(years):
-    if years in year_list:
-        return pd.read_csv(year_list[years])
+    return pd.read_csv(data_main)
 
 
 
@@ -138,7 +121,7 @@ for x in result.columns.drop(['在留外国人数','都道府県']):
     st.badge('順位表（'+x+'）')
     st.dataframe(result.groupby(x).sum()['在留外国人数'].sort_values(ascending=False))
 
-if years <= '2023':
+if years <= '202306':
     with st.container(border = True):
         st.badge('市区町村x国籍・地域')
         st.dataframe((pd.read_csv(city_nat)))

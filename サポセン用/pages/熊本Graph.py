@@ -29,7 +29,7 @@ st.button('reset',on_click=reset)
 
 ## Selected Year########################3
 if type_select == '特定の年':
-    year_exact = st.selectbox('年',['-','2025','2024','2023','2022','2021'], key = 'year_exact')
+    year_exact = st.selectbox('年月',['-','202506','202406','202306','202206','202106'], key = 'year_exact')
     type_chart = st.selectbox('チャート種類', ['-', '棒', '円'], key='type_chart')
     if year_exact == '-':
         st.stop()
