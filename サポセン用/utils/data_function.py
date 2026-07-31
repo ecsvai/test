@@ -2,25 +2,31 @@ import pandas as pd
 import streamlit as st
 import pathlib as pl
 
-year_vari = None
-
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
+data_2512 = BASE_DIR / 'data'/'25-12kumamoto.csv'
 data_2506 = BASE_DIR / 'data'/'25-06kumamoto.csv'
+data_2412 = BASE_DIR / 'data'/'24-12kumamoto.csv'
 data_2406 = BASE_DIR / 'data'/'24-06kumamoto.csv'
+data_2312 = BASE_DIR / 'data'/'23-12kumamoto.csv'
 data_2306 = BASE_DIR / 'data'/'23-06kumamoto.csv'
+data_2212 = BASE_DIR / 'data'/'22-12kumamoto.csv'
 data_2206 = BASE_DIR / 'data'/'22-06kumamoto.csv'
+data_2112 = BASE_DIR / 'data'/'21-12kumamoto.csv'
 data_2106 = BASE_DIR / 'data'/'21-06kumamoto.csv'
 
-data_city_nat = BASE_DIR / 'data'/f'{year_vari}-06city_nat.csv'
 
 year_list = {
-    '202506':data_2506,
-    '202406':data_2406,
-    '202306':data_2306,
-    '202206':data_2206,
-    '202106':data_2106
+    '2025/12':data_2512,
+    '2025/06':data_2506,
+    '2024/12':data_2412,
+    '2024/06':data_2406,
+    '2023/12':data_2312,
+    '2023/06':data_2306,
+    '2022/12':data_2212,
+    '2022/06':data_2206,
+    '2021/12':data_2112,
+    '2021/06':data_2106
 }
-
 
 
 @st.cache_data
@@ -29,18 +35,15 @@ def load_data():
     drop_cols = []
     for year in year_list:
         data[year] = pd.read_csv(year_list[year])
-        drop_cols = data[year].columns.drop("在留外国人数",'')
+        data[year] = data[year].dropna(how='all')
+        #drop_cols = data[year].columns.drop("在留外国人数",'')
         data[year] = data[year].ffill()
         if '市区町村コード' in data[year].columns:
             data[year] = data[year].drop(columns='市区町村コード')
     return data
 
-#def load_data_city_nat():
+def load_data_city_nat(year):
     data = {}
-    data_temp = {}
-    for year in ['2023','2022','2021']:
-        year_vari = year
-        data = pd.read_csv(data_city_nat)
-        data = data[year].groupby('市区町村')['総数'].sum().copy()
+    data = pd.read_csv(BASE_DIR / 'data'/f'{year[:4]}-{year[5:7]}city_nat.csv', dtype=str)
 
     return data

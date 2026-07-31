@@ -8,13 +8,13 @@ st.caption('＊＊（注２）総数10人以下の市町村については、人
 st.caption('＊＊（注３）2023年12月以前のデータは「市区町村」のクロスサーチができません。市区町村データはページの最下部にあります＊＊')
 
 years = st.selectbox('年月を選択',
-                     ['-','202512','202506','202412','202406','202312','202306',
-                      '202212','202206','202112','202106'])
+                     ['-','2025/12','2025/06','2024/12','2024/06','2023/12','2023/06',
+                      '2022/12','2022/06','2021/12','2021/06'])
 
 BASE_DIR = pl.Path(__file__).resolve().parent.parent
 
-data_main = BASE_DIR / 'data'/f'{years[2:4]}-{years[4:6]}kumamoto.csv'
-city_nat = BASE_DIR / 'data'/f'{years[:4]}-{years[4:6]}city_nat.csv'
+data_main = BASE_DIR / 'data'/f'{years[2:4]}-{years[5:7]}kumamoto.csv'
+city_nat = BASE_DIR / 'data'/f'{years[:4]}-{years[5:7]}city_nat.csv'
 
 
 @st.cache_data

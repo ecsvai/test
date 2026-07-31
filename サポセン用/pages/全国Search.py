@@ -16,6 +16,8 @@ maintable = {
     '国籍・地域・在留資格別': natqual,
 }
 
+st.write('***2025年6月のデータを参照***')
+
 select_form = st.selectbox('choose criteria', maintable.keys())
 result = maintable[select_form]
 

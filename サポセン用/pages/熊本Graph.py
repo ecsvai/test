@@ -7,21 +7,23 @@ import pathlib as pl
 base_dir = pl.Path(__file__).resolve().parent.parent
 
 from utils.data_function import load_data
+from utils.data_function import load_data_city_nat
 data = load_data()
 
 def data_exact(year):
     return data[year]
 
-st.header('メンテナンス中！')
-st.image(base_dir/'data'/'ojigi.png')
-st.error('メンテナンス中！')
-st.divider()
+#st.header('メンテナンス中！')
+#st.image(base_dir/'data'/'ojigi.png')
+#st.error('メンテナンス中！')
+#st.divider()
 
 #st.caption('性別・年齢のデータが不十分のため使わないでください')
 #st.caption('市区町村のデータは2024/2025年のみ')
 
 
-type_select = st.selectbox('データ選択',['-','長期推移','特定の年'],key = 'type_select')
+
+type_select = st.selectbox('データを選択',['-','長期推移','特定の年'],key = 'type_select')
 
 
 if type_select == '-':
@@ -36,19 +38,20 @@ st.button('reset',on_click=reset)
 
 ## Selected Year########################3
 if type_select == '特定の年':
-    year_exact = st.selectbox('年月',['-','202506','202406','202306','202206','202106'], key = 'year_exact')
-    type_chart = st.selectbox('チャート種類', ['-', '棒', '円'], key='type_chart')
+    year_exact = st.selectbox('年月',['-','2025/12','2025/06','2024/12','2024/06','2023/12',
+                                      '2023/06','2022/12','2022/06','2021/12','2021/06'], key = 'year_exact')
+    type_chart = st.selectbox('グラフの種類', ['-', '棒', '円'], key='type_chart')
     if year_exact == '-':
         st.stop()
     else:
         data_current = data_exact(year_exact)
 
-    param_1 = st.selectbox('Select Parameter 1',
+    param_1 = st.selectbox('フィルター１を選択',
                            ['-']+
                            list(data_current.columns.drop(['在留外国人数','都道府県'])),key = 'param_1')
     check_top10 = st.checkbox('Show Top 10', key='param_1_checkbox')
 
-    param_2 = st.selectbox('Select Parameter 2',
+    param_2 = st.selectbox('フィルター２を選択',
                            ['-']
                            +list(data_current.columns.drop(['在留外国人数','都道府県'])), key = 'param_2')
     check_top10_2 = st.checkbox('Show Top 10', key='param_2_checkbox')
@@ -69,7 +72,13 @@ if type_select == '特定の年':
         if check_top10:
             top10 = data_temp[param_1].head(10).unique()
             data_top10 = data_temp.loc[data_temp[param_1].isin(top10)]
+            other = data_temp.loc[~data_temp[param_1].isin(top10)].sum(numeric_only=True)
+            other[param_1] = 'その他'
+
             data_output = data_top10.copy()
+            data_output.loc[len(data_output)] = other
+
+
 
 
 
@@ -169,7 +178,8 @@ if type_select == '特定の年':
 if type_select == '長期推移':
     df_total = pd.DataFrame()
     df_final = pd.DataFrame()
-    for year in ['2025','2024','2023','2022','2021']:
+    for year in ['2025/12','2025/06','2024/12','2024/06','2023/12',
+                 '2023/06','2022/12','2022/06','2021/12','2021/06']:
         df_total = data_exact(year).copy()
         df_total['year'] = year
         df_final = pd.concat([df_final,df_total])
@@ -177,23 +187,24 @@ if type_select == '長期推移':
 
 
     df_temp = pd.DataFrame()
-    df_temp['year'] = df_final['year'].unique().astype(int)
+    df_temp['year'] = df_final['year'].unique()
     total_list = []
     for x in df_final['year'].unique():
         total_list.append(df_final.loc[df_final['year'] == x]['在留外国人数'].sum())
     df_temp['total'] = total_list
 
-    st.subheader('熊本県外国人総数推移')
+    st.subheader('熊本県在留外国人総数推移')
     fig_output = px.line(df_temp,x = 'year', y = 'total', markers = True)
     fig_output.update_xaxes(tickformat = 'd', type = 'category',
-                            categoryorder = 'total ascending')
+                            categoryorder = 'category ascending')
     fig_output.update_yaxes(rangemode = 'tozero')
     st.plotly_chart(fig_output)
 
     st.divider()
+    st.subheader('カテゴリーから探す')
 
 
-    param_1 = st.selectbox('Select Parameter 1',
+    param_1 = st.selectbox('フィルター１を選択',
                            ['-'] +
                            list(df_final.columns.drop(['在留外国人数', 'year'])), key='param_1')
 
@@ -202,18 +213,21 @@ if type_select == '長期推移':
        st.stop()
     else:
         df_change = df_final.groupby([param_1, 'year'], as_index=False)['在留外国人数'].sum()
-        for x in df_change[param_1]:
-            for y in ['2025', '2024', '2023', '2022', '2021']:
-                if ((df_change[param_1] == x) & (df_change['year'] == y)).any() == False:
-                    df_change.loc[len(df_change)] = [x, y, 0]
+        for y in ['2023/06','2022/12','2022/06', '2021/12','2021/06']:
+            df_temp2 = load_data_city_nat(y)
+            for x in df_change[param_1].unique():
+                city_nat = df_temp2[df_temp2[param_1] == x]['総数'].iloc[0]
 
-        param_2 = st.multiselect('Select Parameters', df_change[param_1].unique())
+                df_change.loc[len(df_change)] = [x, y, city_nat]
+
+        param_2 = st.multiselect('フィルター２を選択', df_change[param_1].unique())
         df_plot = df_change[df_change[param_1].isin(param_2)].sort_values('year', ascending=[False])
 
 
 
+
     fig_output2 = px.line(df_plot, x = 'year', y = '在留外国人数', color = param_1, markers = True)
-    fig_output2.update_xaxes(tickformat='d')
+    fig_output2.update_xaxes(categoryorder = 'category ascending')
     fig_output2.update_yaxes(rangemode = 'tozero')
     st.plotly_chart(fig_output2)
 

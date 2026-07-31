@@ -11,6 +11,8 @@ def load_data():
 
 full_table = load_data()
 
+st.write('***2025年6月のデータを参照***')
+
 keys = ['nat','qual','sex','age5sai','pref']
 def reset():
     for key in keys:
