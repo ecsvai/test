@@ -13,10 +13,10 @@ data = load_data()
 def data_exact(year):
     return data[year]
 
-#st.header('メンテナンス中！')
-#st.image(base_dir/'data'/'ojigi.png')
-#st.error('メンテナンス中！')
-#st.divider()
+st.header('メンテナンス中！')
+st.image(base_dir/'data'/'ojigi.png')
+st.error('メンテナンス中！')
+st.divider()
 
 #st.caption('性別・年齢のデータが不十分のため使わないでください')
 #st.caption('市区町村のデータは2024/2025年のみ')
