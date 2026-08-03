@@ -13,13 +13,15 @@ data = load_data()
 def data_exact(year):
     return data[year]
 
-st.header('メンテナンス中！')
-st.image(base_dir/'data'/'ojigi.png')
-st.error('メンテナンス中！')
-st.divider()
+#st.header('メンテナンス中！')
+#st.image(base_dir/'data'/'ojigi.png')
+#st.error('メンテナンス中！')
+#st.divider()
 
 #st.caption('性別・年齢のデータが不十分のため使わないでください')
 #st.caption('市区町村のデータは2024/2025年のみ')
+with st.container():
+    st.write('シンプルなグラフ作成アプリ')
 
 
 
@@ -206,19 +208,21 @@ if type_select == '長期推移':
 
     param_1 = st.selectbox('フィルター１を選択',
                            ['-'] +
-                           list(df_final.columns.drop(['在留外国人数', 'year'])), key='param_1')
+                           list(df_final.columns.drop(['在留外国人数', 'year',
+                                                       '性別','年齢','年齢（５歳階級）'])), key='param_1')
 
 
     if param_1 == '-':
        st.stop()
     else:
         df_change = df_final.groupby([param_1, 'year'], as_index=False)['在留外国人数'].sum()
-        for y in ['2023/06','2022/12','2022/06', '2021/12','2021/06']:
-            df_temp2 = load_data_city_nat(y)
-            for x in df_change[param_1].unique():
-                city_nat = df_temp2[df_temp2[param_1] == x]['総数'].iloc[0]
+        if param_1 == '市区町村':
+            for y in ['2023/06','2022/12','2022/06', '2021/12','2021/06']:
+                df_temp2 = load_data_city_nat(y)
+                for x in df_change[param_1].unique():
+                    city_nat = df_temp2[df_temp2[param_1] == x]['総数'].iloc[0]
 
-                df_change.loc[len(df_change)] = [x, y, city_nat]
+                    df_change.loc[len(df_change)] = [x, y, city_nat]
 
         param_2 = st.multiselect('フィルター２を選択', df_change[param_1].unique())
         df_plot = df_change[df_change[param_1].isin(param_2)].sort_values('year', ascending=[False])
