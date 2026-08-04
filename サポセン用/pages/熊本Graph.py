@@ -20,7 +20,7 @@ def data_exact(year):
 
 #st.caption('性別・年齢のデータが不十分のため使わないでください')
 #st.caption('市区町村のデータは2024/2025年のみ')
-with st.container():
+with st.container(border = True):
     st.write('シンプルなグラフ作成アプリ')
 
 
@@ -208,7 +208,7 @@ if type_select == '長期推移':
 
     param_1 = st.selectbox('フィルター１を選択',
                            ['-'] +
-                           list(df_final.columns.drop(['在留外国人数', 'year',
+                           list(df_final.columns.drop(['在留外国人数', 'year','都道府県',
                                                        '性別','年齢','年齢（５歳階級）'])), key='param_1')
 
 
